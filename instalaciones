@@ -1,0 +1,3 @@
+nest g resource Authentication
+nest
+deprecada nestjs/typeorm typeorm pg
