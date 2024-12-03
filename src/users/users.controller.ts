@@ -22,7 +22,9 @@ export class UsersController {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService
-  ) {}
+  ) {
+    console.log(this.configService.get('config.cors_origin'),"sadasdas")
+  }
 
   @Post('login')
     async authentication(@Body() createAuthticationProviderDto:CreateAuthticationProviderDto, @Res() res: Response) {

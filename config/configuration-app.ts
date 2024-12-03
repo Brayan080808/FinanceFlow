@@ -15,6 +15,7 @@ export default registerAs('config',()=> ({
     database_port: parseInt(process.env.DATABASE_PORT,10),
     database_password: process.env.DATABASE_PASSWORD,
     database_username: process.env.DATABASE_USERNAME,
+    cors_origin: process.env.CORS_ORIGIN,
 
   })
 );
