@@ -125,7 +125,7 @@ export class UsersController {
       throw new ForbiddenException('Access denied: No access token provided');
     }
     try{
-      const payload = this.jwtService.verify(refreshToken, { secret: 'defaultSecret' });
+      const payload = this.jwtService.verify(refreshToken, { secret: this.configService.get('config.jwt_secret') });
 
       
       const accessToken = this.usersService.access(payload.userId);

@@ -1,10 +1,14 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { TokenExpiredError } from '@nestjs/jwt';
 
 @Injectable()
 export class JwtUserGuard implements CanActivate {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private configService: ConfigService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -18,7 +22,7 @@ export class JwtUserGuard implements CanActivate {
 
     try {
       // Intentar verificar el token de acceso
-      const payload = this.jwtService.verify(accessToken, { secret: 'defaultSecret' });
+      const payload = this.jwtService.verify(accessToken, { secret: this.configService.get('config.jwt_secret') });
       request.user = payload; // Almacena el payload en la solicitud
       return true; // Acceso permitido
     } catch (error) {
@@ -26,10 +30,10 @@ export class JwtUserGuard implements CanActivate {
       if (error instanceof TokenExpiredError && refreshToken) {
         try {
           // Verifica el token de refresco
-          const refreshPayload = this.jwtService.verify(refreshToken, { secret: 'defaultSecret' });
+          const refreshPayload = this.jwtService.verify(refreshToken, { secret: this.configService.get('config.jwt_secret') });
           
           // Generar un nuevo token de acceso
-          const newAccessToken = this.jwtService.sign({ userId: refreshPayload.userId }, { secret: 'defaultSecret', expiresIn: '1h' });
+          const newAccessToken = this.jwtService.sign({ userId: refreshPayload.userId }, { secret: this.configService.get('config.jwt_secret'), expiresIn: '1h' });
 
           // Almacenar el nuevo token de acceso en las cookies (ajusta según tu lógica)
           request.res.cookie('accessToken', newAccessToken, { 
