@@ -58,6 +58,9 @@ export class UsersService {
 
 
   async authentication(authenticationProvider: CreateAuthticationProviderDto){
+
+    console.log(authenticationProvider)
+
     const user = await this.users.findOne({where:{authenticationProvider}})
 
     
@@ -68,8 +71,10 @@ export class UsersService {
         "created":false
       }
     }
+
+    const tokenAuth = await this.createAcount(authenticationProvider);
     return {
-      "tokenAuth":await this.createAcount(authenticationProvider),
+      "tokenAuth":tokenAuth,
       "created":true
     }
   }

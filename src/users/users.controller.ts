@@ -61,7 +61,7 @@ export class UsersController {
         }).then(response => response.json());
  
         const { tokenAuth, created } = await this.usersService.authentication(
-        {"idProvider":user.id,"siteProvider":provider.siteProvider,"email":user.email}
+        {"idProvider":user.id,"siteProvider":provider.siteProvider}
       )
         
    
@@ -81,7 +81,7 @@ export class UsersController {
       if (!created) res.status(200)  
       
 
-      return res.send({ name: user.name, picture: user.avatar_url })
+      return res.send({ name: user.name, picture: user.avatar_url,"email":user.email })
   
       }
       else if(provider.siteProvider == 'Google'){
