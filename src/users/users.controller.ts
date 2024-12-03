@@ -36,9 +36,6 @@ export class UsersController {
         const clientSecret = this.configService.get('config.github_secret_key')
 
 
-        // const clientId = "Ov23liLaFblHYoYJ1Bn0"
-        // const clientSecret = "21a94dd0aee1e59f96079711fd3162e173307dc1"
-
         const response = await fetch('https://github.com/login/oauth/access_token', {
           method: 'POST',
           headers: {
@@ -128,7 +125,7 @@ export class UsersController {
       const payload = this.jwtService.verify(refreshToken, { secret: this.configService.get('config.jwt_secret') });
 
       
-      const accessToken = this.usersService.access(payload.userId);
+      const accessToken = this.usersService.access(1);
 
 
       res.cookie('accessToken', accessToken, {
