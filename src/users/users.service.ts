@@ -102,6 +102,7 @@ export class UsersService {
   }
 
   async findOne(id: number) {
+    console.log("**********************",id,"**********************")
     const user = await this.users.findOne({where:{id}})
 
     if (!user) throw new NotFoundException("This user don't exist ")
