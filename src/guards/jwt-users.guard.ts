@@ -75,8 +75,6 @@ export class JwtUserGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const accessToken = request.cookies.accessToken; // Obtener el token de acceso
-    const refreshToken = request.cookies.refreshToken; // Obtener el token de refresco
 
     request.user = 1
     return true
