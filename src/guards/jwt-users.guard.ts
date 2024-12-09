@@ -59,25 +59,3 @@ export class JwtUserGuard implements CanActivate {
     }
   }
 }
-
-
-// import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
-// import { ConfigService } from '@nestjs/config';
-// import { JwtService } from '@nestjs/jwt';
-// import { TokenExpiredError } from '@nestjs/jwt';
-
-// @Injectable()
-// export class JwtUserGuard implements CanActivate {
-//   constructor(
-//     private readonly jwtService: JwtService,
-//     private configService: ConfigService,
-//   ) {}
-
-//   async canActivate(context: ExecutionContext): Promise<boolean> {
-//     const request = context.switchToHttp().getRequest();
-
-//     request.user = 1
-//     return true
-  
-//   }
-// }

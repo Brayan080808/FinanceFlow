@@ -23,7 +23,6 @@ export class UsersController {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService
   ) {
-    console.log(this.configService.get('config.cors_origin'),"sadasdas")
   }
 
   @Post('login')
@@ -31,9 +30,15 @@ export class UsersController {
 
       const provider:any = structuredClone(createAuthticationProviderDto)
 
+      console.log("provider",provider);
       if(provider.siteProvider == 'Github'){ 
         const clientId = this.configService.get('config.github_client_id')
         const clientSecret = this.configService.get('config.github_secret_key')
+
+        console.log("clientId",clientId)
+        console.log("clientSecret",clientSecret)
+
+        try{
 
 
         const response = await fetch('https://github.com/login/oauth/access_token', {
@@ -58,28 +63,35 @@ export class UsersController {
         }).then(response => response.json());
  
         const { tokenAuth, created } = await this.usersService.authentication(
-        {"idProvider":user.id,"siteProvider":provider.siteProvider}
-      )
+        {"idProvider":user.id,"siteProvider":provider.siteProvider})
+      
+        res.cookie('accessToken', tokenAuth.accessToken, {
+          httpOnly: true, // La cookie no se puede acceder desde JavaScript
+          secure: false, // Solo enviar la cookie por HTTPS en producción
+          maxAge: 1000*60*15, // Duración de la cookie en milisegundos (1 hora en este caso)
+        });
         
-   
-
-      res.cookie('accessToken', tokenAuth.accessToken, {
-        httpOnly: true, // La cookie no se puede acceder desde JavaScript
-        secure: false, // Solo enviar la cookie por HTTPS en producción
-        maxAge: 1000*60*15, // Duración de la cookie en milisegundos (1 hora en este caso)
-      });
-      
-      res.cookie('refreshToken', tokenAuth.refreshToken, {
-        httpOnly: true, // La cookie no se puede acceder desde JavaScript
-        secure: false, // Solo enviar la cookie por HTTPS en producción
-        maxAge: 1000*60*60*24*7, // Duración de la cookie en milisegundos (1 hora en este caso)
-      });
-
-      if (!created) res.status(200)  
-      
-
-      return res.send({ name: user.name, picture: user.avatar_url,"email":user.email })
+        res.cookie('refreshToken', tokenAuth.refreshToken, {
+          httpOnly: true, // La cookie no se puede acceder desde JavaScript
+          secure: false, // Solo enviar la cookie por HTTPS en producción
+          maxAge: 1000*60*60*24*7, // Duración de la cookie en milisegundos (1 hora en este caso)
+        });
   
+        if (!created) res.status(200)  
+
+
+        console.log("response",response)
+      
+        return res.send({ name: user.name, picture: user.avatar_url,"email":user.email })
+      
+      }catch{(error) => {
+        res.status(403);
+        res.send({"message":"Fatal error"});
+      }}
+      
+
+      
+
       }
       else if(provider.siteProvider == 'Google'){
         const { tokenAuth, created } = await this.usersService.authentication(createAuthticationProviderDto);
@@ -104,7 +116,6 @@ export class UsersController {
       }
 
     return res.send({ message: 'Login exitoso' })
-
     }
 
   @Get('logout')
@@ -119,13 +130,13 @@ export class UsersController {
     const refreshToken = request.cookies.refreshToken; // Obtener el token de refresco
 
     if (!refreshToken) {
+      console.log("No hay refresh token")
       throw new ForbiddenException('Access denied: No access token provided');
     }
     try{
       const payload = this.jwtService.verify(refreshToken, { secret: this.configService.get('config.jwt_secret') });
 
-      
-      const accessToken = this.usersService.access(1);
+      const accessToken = this.usersService.access(payload.userId);
 
 
       res.cookie('accessToken', accessToken, {
@@ -164,7 +175,7 @@ export class UsersController {
 
     res.status(200);
 
-    return res.send({coin}) 
+    return res.send(coin) 
   }
     
 

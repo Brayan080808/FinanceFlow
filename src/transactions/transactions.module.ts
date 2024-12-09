@@ -1,28 +1,3 @@
-// import { Module } from '@nestjs/common';
-// import { TypeOrmModule } from '@nestjs/typeorm';
-// import { TransactionsService } from './transactions.service';
-// import { TransactionsController } from './transactions.controller';
-// import { Transaction } from './entities/transaction.entity';
-// import { Category } from './entities/category.entity';
-// import { Coin } from './entities/coin.entity';
-// import { User } from 'src/users/entities/user.entity';
-// import { JwtUserGuard } from 'src/guards/jwt-users.guard';
-// import { JwtService, JwtModule } from '@nestjs/jwt';
-
-// @Module({
-//   imports: [
-//     TypeOrmModule.forFeature([Transaction,Category,Coin,User]), // Declara la entidad aquí
-//     JwtModule.register({
-//       secret: 'defaultSecret', // Asegúrate de que sea la misma que usaste al firmar
-//       signOptions: { expiresIn: '1h' }, // Opcional
-//     }),
-//   ],
-//   controllers: [TransactionsController],
-//   providers: [TransactionsService,JwtUserGuard,JwtService],
-// })
-// export class TransactionsModule {}
-
-
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TransactionsService } from './transactions.service';

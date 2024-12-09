@@ -126,6 +126,7 @@ export class UsersService {
     .createQueryBuilder('user')
     .innerJoin('user.coin', 'coin') // Realiza un INNER JOIN con la relación coin
     .select('coin.currency AS coin') // Selecciona la columna currency
+    .addSelect('coin.code AS code') // Selecciona la columna currency
     .where('user.id = :id', { id: userId }) // Filtra por el id del usuario
     .getRawOne();
         
